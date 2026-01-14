@@ -22,6 +22,9 @@ public class PrintDanServlet extends HttpServlet {
 
 		String inputDan = request.getParameter("dan");
 		String inputLimit = request.getParameter("limit");
+		String inputColor = request.getParameter("color");
+//		http://localhost:8081/Servlet_AM_26_01/printDan?dan=9&limit=9&color=red
+		
 		System.out.println(inputDan);
 		
 		if (inputDan == null) {
@@ -35,12 +38,15 @@ public class PrintDanServlet extends HttpServlet {
 // 		문장의 정수화
 // 		http://localhost:8081/Servlet_AM_26_01/printDan?dan=9
 		int dan = Integer.parseInt(inputDan);
+//		http://localhost:8081/Servlet_AM_26_01/printDan?dan=9&limit=9
 		int limit = Integer.parseInt(inputLimit);
+
 		
-		response.getWriter().append("==" + dan + "단==<br>");
-		
+		response.getWriter().append(String.format("<div style=\"color:%s;\">==%d단==</div>", inputColor, dan));
+
 		for (int i = 1; i <= limit; i++) {
-			response.getWriter().append(String.format("%d * %d = %d<br>", dan, i, dan * i));
+			response.getWriter()
+					.append(String.format("<div style='color:%s;'>%d * %d = %d</div>", inputColor, dan, i, dan * i));
 		}
 
 	}
