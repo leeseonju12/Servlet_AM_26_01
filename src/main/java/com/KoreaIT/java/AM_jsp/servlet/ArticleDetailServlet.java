@@ -46,6 +46,12 @@ public class ArticleDetailServlet extends HttpServlet {
 			SecSql sql = SecSql.from("SELECT *");
 			sql.append("FROM article");
 			sql.append("WHERE id = ?", id);
+			
+//			sql = new SecSql();
+//            sql.append("DELETE FROM article");
+//            sql.append("WHERE id = ?;", id);
+
+            DBUtil.delete(conn, sql);
 
 			Map<String, Object> articleRow = DBUtil.selectRow(conn, sql);
 
