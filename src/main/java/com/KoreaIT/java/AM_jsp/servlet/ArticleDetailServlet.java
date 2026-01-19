@@ -42,16 +42,9 @@ public class ArticleDetailServlet extends HttpServlet {
 
 			int id = Integer.parseInt(request.getParameter("id"));
 
-			//String sql = String.format("SELECT * FROM article WHERE id = %d;", id);
 			SecSql sql = SecSql.from("SELECT *");
 			sql.append("FROM article");
 			sql.append("WHERE id = ?", id);
-			
-//			sql = new SecSql();
-//            sql.append("DELETE FROM article");
-//            sql.append("WHERE id = ?;", id);
-
-            DBUtil.delete(conn, sql);
 
 			Map<String, Object> articleRow = DBUtil.selectRow(conn, sql);
 
@@ -71,9 +64,10 @@ public class ArticleDetailServlet extends HttpServlet {
 			}
 		}
 	}
-
+	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		doGet(request, response);
 	}
+
 }

@@ -8,6 +8,9 @@ List<Map<String, Object>> articleRows = (List<Map<String, Object>>) request.getA
 int cPage = (int) request.getAttribute("page");
 int totalCnt = (int) request.getAttribute("totalCnt");
 int totalPage = (int) request.getAttribute("totalPage");
+boolean isLogined = (boolean) request.getAttribute("isLogined");
+int loginedMemberId = (int) request.getAttribute("loginedMemberId");
+Map<String, Object> loginedMember = (Map<String, Object>) request.getAttribute("loginedMember");
 %>
 
 <!DOCTYPE html>
@@ -25,8 +28,32 @@ table>thead>tr>th, table>tbody>tr>td {
 	<a href="../home/main">메인으로 이동</a>
 
 	<h1>게시글 목록</h1>
-	
-	총 게시글 갯수 : <%=totalCnt%>
+	<div><%=loginedMemberId%>번 회원 로그인 중
+	</div>
+	<div><%=loginedMember%></div>
+	<%
+	if (isLogined) {
+	%>
+	<div>
+		<a href="../member/doLogout">로그아웃</a>
+		<a href="write">글쓰기</a>
+	</div>
+	<%
+	}
+	%>
+
+	<%
+	if (!isLogined) {
+	%>
+	<div>
+		<a href="../member/login">로그인</a>
+	</div>
+	<%
+	}
+	%>
+
+	총 게시글 갯수 :
+	<%=totalCnt%>
 
 	<table border="1"
 		style="border-collapse: collapse; border-color: green">
@@ -54,15 +81,15 @@ table>thead>tr>th, table>tbody>tr>td {
 				<td><a
 						onclick="if(confirm('정말 삭제할거임???') == false) {return false;}"
 						href="doDelete?id=<%=articleRow.get("id")%>">del</a></td>
-						
-						<td><a href="modify?id=<%=articleRow.get("id")%>">edit</a></td>
+
+				<td><a href="modify?id=<%=articleRow.get("id")%>">edit</a></td>
 			</tr>
 			<%
 			}
 			%>
 		</tbody>
 	</table>
-	
+
 	<style type="text/css">
 .page {
 	font-size: 1.4rem;
@@ -87,9 +114,9 @@ table>thead>tr>th, table>tbody>tr>td {
 		<%
 		}
 		%>
-	
 
-	<!-- 
+
+		<!-- 
 	<ul>
 	<%--	<%
 		for (Map<String, Object> articleRow : articleRows) {
@@ -102,6 +129,5 @@ table>thead>tr>th, table>tbody>tr>td {
 	--%>
 	</ul>
 	 -->
-
 </body>
 </html>
