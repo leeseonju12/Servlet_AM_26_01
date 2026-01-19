@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.Map;
 
 import com.KoreaIT.java.AM_jsp.controller.ArticleController;
+import com.KoreaIT.java.AM_jsp.controller.HomeController;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -70,26 +71,46 @@ public class DispatcherServlet extends HttpServlet {
 
 			if (reqUriBits.length < 5) {
 				response.getWriter().append(
-						String.format("<script>alert('올바른 요청이 x'); location.replace('../home/main');</script>"));
+						String.format("<script>alert('올바른 요청이 아닙니다.'); location.replace('../home/main');</script>"));
 				return;
 			}
 
 			String controllerName = reqUriBits[3];
 			String actionMethodName = reqUriBits[4];
 
-			if (controllerName.equals("article")) {
-				ArticleController articleController = new ArticleController(request, response, conn);
+			if (controllerName.equals("home")) {
+				HomeController homeController = new HomeController(request, response);
 
-				if (actionMethodName.equals("list")) {
+				homeController.showMain();
+			} else if (controllerName.equals("article")) {
+				ArticleController articleController = new ArticleController(request, response, conn);
+				switch (actionMethodName) {
+				case "list":
 					articleController.showList();
+					break;
+				case "detail":
+					articleController.showDetail();
+					break;
+				case "doDelete":
+					articleController.doDelete();
+					break;
+				case "modify":
+					articleController.showModify();
+					break;
+				case "doModify":
+					articleController.doModify();
+					break;
+				case "write":
+					articleController.showWrite();
+					break;
+				case "doWrite":
+					articleController.doWrite();
+					break;
 				}
 			}
-//			else if (controllerName.equals("member")) {
-//				MemberController memberController = new MemberController();
-//			}
 
 		} catch (SQLException e) {
-			System.out.println("에러 : " + e);
+			System.out.println("에러 : 1" + e);
 		} finally {
 			try {
 				if (conn != null && !conn.isClosed()) {
@@ -100,7 +121,6 @@ public class DispatcherServlet extends HttpServlet {
 			}
 		}
 
-		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)

@@ -23,6 +23,7 @@ if (!isLogined) {
 %>
 <div>
 	<a href="../member/login">로그인</a>
+	<a href="../article/write">글쓰기</a>
 </div>
 <%
 }
