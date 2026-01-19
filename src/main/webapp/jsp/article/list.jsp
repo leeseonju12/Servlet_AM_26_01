@@ -5,9 +5,11 @@
 	pageEncoding="UTF-8"%>
 <%
 List<Map<String, Object>> articleRows = (List<Map<String, Object>>) request.getAttribute("articleRows");
+
 int cPage = (int) request.getAttribute("page");
 int totalCnt = (int) request.getAttribute("totalCnt");
 int totalPage = (int) request.getAttribute("totalPage");
+
 boolean isLogined = (boolean) request.getAttribute("isLogined");
 int loginedMemberId = (int) request.getAttribute("loginedMemberId");
 Map<String, Object> loginedMember = (Map<String, Object>) request.getAttribute("loginedMember");
@@ -82,7 +84,6 @@ table>thead>tr>th, table>tbody>tr>td {
 				<td><a
 						onclick="if(confirm('정말 삭제할거임???') == false) {return false;}"
 						href="doDelete?id=<%=articleRow.get("id")%>">del</a></td>
-
 				<td><a href="modify?id=<%=articleRow.get("id")%>">edit</a></td>
 			</tr>
 			<%
@@ -115,9 +116,8 @@ table>thead>tr>th, table>tbody>tr>td {
 		<%
 		}
 		%>
-
-
-		<!-- 
+	</div>
+	<!-- 
 	<ul>
 	<%--	<%
 		for (Map<String, Object> articleRow : articleRows) {
@@ -130,5 +130,6 @@ table>thead>tr>th, table>tbody>tr>td {
 	--%>
 	</ul>
 	 -->
+
 </body>
 </html>

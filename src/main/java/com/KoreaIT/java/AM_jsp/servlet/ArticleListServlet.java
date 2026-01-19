@@ -40,7 +40,6 @@ public class ArticleListServlet extends HttpServlet {
 
 		try {
 			conn = DriverManager.getConnection(url, user, password);
-			response.getWriter().append("연결 성공");
 
 			int page = 1;
 
@@ -48,7 +47,7 @@ public class ArticleListServlet extends HttpServlet {
 				page = Integer.parseInt(request.getParameter("page"));
 			}
 
-			int itemsInAPage = 5;
+			int itemsInAPage = 10;
 			int limitFrom = (page - 1) * itemsInAPage;
 
 			SecSql sql = SecSql.from("SELECT COUNT(*)");
@@ -81,10 +80,12 @@ public class ArticleListServlet extends HttpServlet {
 			request.setAttribute("isLogined", isLogined);
 			request.setAttribute("loginedMemberId", loginedMemberId);
 			request.setAttribute("loginedMember", loginedMember);
+
 			request.setAttribute("page", page);
 			request.setAttribute("articleRows", articleRows);
 			request.setAttribute("totalCnt", totalCnt);
 			request.setAttribute("totalPage", totalPage);
+
 			request.getRequestDispatcher("/jsp/article/list.jsp").forward(request, response);
 
 		} catch (SQLException e) {
@@ -99,6 +100,7 @@ public class ArticleListServlet extends HttpServlet {
 			}
 		}
 	}
+
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 

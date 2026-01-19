@@ -40,13 +40,12 @@ public class ArticleDetailServlet extends HttpServlet {
 			conn = DriverManager.getConnection(url, user, password);
 
 			int id = Integer.parseInt(request.getParameter("id"));
-			
+
 			SecSql sql = SecSql.from("SELECT A.*, M.name");
 			sql.append("FROM article AS A");
 			sql.append("INNER JOIN `member` AS M");
 			sql.append("ON A.memberId = M.id");
 			sql.append("WHERE A.id = ?", id);
-
 
 			Map<String, Object> articleRow = DBUtil.selectRow(conn, sql);
 
@@ -69,7 +68,7 @@ public class ArticleDetailServlet extends HttpServlet {
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		
+
 		doGet(request, response);
 	}
 
