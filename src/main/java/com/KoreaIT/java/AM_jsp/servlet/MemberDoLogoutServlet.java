@@ -14,9 +14,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/article/detail")
-public class ArticleDetailServlet extends HttpServlet {
+@WebServlet("/member/doLogout")
+public class MemberDoLogoutServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -38,26 +39,14 @@ public class ArticleDetailServlet extends HttpServlet {
 
 		try {
 			conn = DriverManager.getConnection(url, user, password);
-			response.getWriter().append("연결 성공");
 
-			int id = Integer.parseInt(request.getParameter("id"));
+			HttpSession session = request.getSession();
+			session.removeAttribute("loginedMember");
+			session.removeAttribute("loginedMemberId");
+			session.removeAttribute("loginedMemberLoginId");
 
-			//String sql = String.format("SELECT * FROM article WHERE id = %d;", id);
-			SecSql sql = SecSql.from("SELECT *");
-			sql.append("FROM article");
-			sql.append("WHERE id = ?", id);
-			
-//			sql = new SecSql();
-//            sql.append("DELETE FROM article");
-//            sql.append("WHERE id = ?;", id);
-
-            DBUtil.delete(conn, sql);
-
-			Map<String, Object> articleRow = DBUtil.selectRow(conn, sql);
-
-			request.setAttribute("articleRow", articleRow);
-
-			request.getRequestDispatcher("/jsp/article/detail.jsp").forward(request, response);
+			response.getWriter()
+					.append(String.format("<script>alert('로그아웃!'); location.replace('../article/list');</script>"));
 
 		} catch (SQLException e) {
 			System.out.println("에러 : " + e);
@@ -72,8 +61,9 @@ public class ArticleDetailServlet extends HttpServlet {
 		}
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		doGet(request, response);
 	}
+
 }

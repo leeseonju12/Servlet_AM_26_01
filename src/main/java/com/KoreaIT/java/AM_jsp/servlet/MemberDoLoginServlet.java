@@ -14,9 +14,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/article/detail")
-public class ArticleDetailServlet extends HttpServlet {
+@WebServlet("/member/doLogin")
+public class MemberDoLoginServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -40,24 +41,36 @@ public class ArticleDetailServlet extends HttpServlet {
 			conn = DriverManager.getConnection(url, user, password);
 			response.getWriter().append("연결 성공");
 
-			int id = Integer.parseInt(request.getParameter("id"));
+			String loginId = request.getParameter("loginId");
+			String loginPw = request.getParameter("loginPw");
 
-			//String sql = String.format("SELECT * FROM article WHERE id = %d;", id);
 			SecSql sql = SecSql.from("SELECT *");
-			sql.append("FROM article");
-			sql.append("WHERE id = ?", id);
-			
-//			sql = new SecSql();
-//            sql.append("DELETE FROM article");
-//            sql.append("WHERE id = ?;", id);
+			sql.append("FROM `member`");
+			sql.append("WHERE loginId = ?;", loginId);
 
-            DBUtil.delete(conn, sql);
+			Map<String, Object> memberRow = DBUtil.selectRow(conn, sql);
 
-			Map<String, Object> articleRow = DBUtil.selectRow(conn, sql);
+			System.out.println(memberRow);
 
-			request.setAttribute("articleRow", articleRow);
+			if (memberRow.isEmpty()) {
+				response.getWriter().append(String
+						.format("<script>alert('%s는 없는애야'); location.replace('../member/login')</script>", loginId));
+				return;
+			}
 
-			request.getRequestDispatcher("/jsp/article/detail.jsp").forward(request, response);
+			if (memberRow.get("loginPw").equals(loginPw) == false) {
+				response.getWriter()
+						.append(String.format("<script>alert('비번 틀렸어'); location.replace('../member/login')</script>"));
+				return;
+			}
+
+			HttpSession session = request.getSession();
+			session.setAttribute("loginedMember", memberRow);
+			session.setAttribute("loginedMemberId", memberRow.get("id"));
+			session.setAttribute("loginedMemberLoginId", memberRow.get("LoginId"));
+
+			response.getWriter().append(String.format(
+					"<script>alert('%s님 로그인!'); location.replace('../article/list');</script>", memberRow.get("name")));
 
 		} catch (SQLException e) {
 			System.out.println("에러 : " + e);
@@ -72,8 +85,9 @@ public class ArticleDetailServlet extends HttpServlet {
 		}
 	}
 
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		doGet(request, response);
 	}
+
 }
